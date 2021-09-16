@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
@@ -9,6 +8,58 @@ public class Enemy : MonoBehaviour
     [SerializeField] private SpriteRenderer _healthFill;
 
     private int _currentHealth;
+    
+    public Vector3 TargetPosition { get; private set; }
+    public int CurrentPathIndex { get; private set; }
+
+    public void MoveToTarget()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, TargetPosition,
+            _moveSpeed * Time.deltaTime);
+    }
+
+    public void SetTargetPosition(Vector3 targetPosition)
+    {
+        TargetPosition = targetPosition;
+        _healthBar.transform.parent = null;
+        
+        // Mengubah rotasi Enemy
+        Vector3 distance = TargetPosition - transform.position;
+        if (Mathf.Abs(distance.y) > Mathf.Abs(distance.x))
+        {
+            // Menghadap ke atas
+            if (distance.y > 0)
+            {
+                transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
+            }
+            // Menghadap ke bawah
+            else
+            {
+                transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, -90f));
+            }
+        }
+        else
+        {
+            // Menghadap ke kanan (default)
+            if (distance.x > 0)
+            {
+                transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
+            }
+            // Menghadao ke kiri
+            else
+            {
+                transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
+            }
+        }
+
+        _healthBar.transform.parent = transform;
+    }
+    
+    // Menandai Indeks terakhir pada path
+    public void SetCurrentPathIndex(int currentIndex)
+    {
+        CurrentPathIndex = currentIndex;
+    }
     
     // Fungsi ini terpanggil sekali setiap kali menghidupkan game object yang memiliki script ini
     private void OnEnable()
