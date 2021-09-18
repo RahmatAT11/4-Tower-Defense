@@ -133,7 +133,7 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        SetTotalEnemy(_enemyCounter);
+        SetTotalEnemy(--_enemyCounter);
         if (_enemyCounter < 0)
         {
             bool isAllEnemyDestroyed = _spawnedEnemies.Find(
